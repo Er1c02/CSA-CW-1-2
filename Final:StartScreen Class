@@ -1,0 +1,51 @@
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+/**
+ * Write a description of class StartScreen here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class StartScreen extends World
+{
+
+    /**
+     * Constructor for objects of class StartScreen.
+     * 
+     */
+    private GreenfootSound soundtrack = new GreenfootSound("BattleTheme2.wav");
+    public StartScreen()
+    {    
+        // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
+        super(600, 400, 1); 
+        prepare();
+    }
+
+    /**
+     * Prepare the world for the start of the program.
+     * That is: create the initial objects and add them to the world.
+     */
+    private void prepare()
+    {
+        letters letters = new letters();
+        addObject(letters,300,200); //positioning the title screen
+        letters.setLocation(300,200);
+        letters.setLocation(300,200);
+    }
+        
+        public void act()
+    {
+     if(Greenfoot.isKeyDown("enter")){ //Pressing entering will allow the player to start
+     Greenfoot.setWorld(new Space());
+    }
+    
+}
+public void started()
+{
+    soundtrack.play(); //plays the star wars theme to make it a bit more appealing 
+}
+public void stopped()
+{
+ soundtrack.stop();   
+}
+}
