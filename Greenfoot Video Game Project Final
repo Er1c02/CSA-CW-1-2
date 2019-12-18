@@ -1,0 +1,287 @@
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+
+public class Space extends World
+{
+
+    private int jeda=0;
+    public Space()
+    {    
+        // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
+        super(600, 400, 1, false);
+        
+        addObject(new Rocket(), 100,200);
+    }
+    
+    public void act()
+    {
+     if(jeda>0)jeda--;
+     else jeda=20;
+     if(jeda==1) {
+         int py=Greenfoot.getRandomNumber(getHeight());
+         addObject(new Enemy(-(2+Greenfoot.getRandomNumber(3))),getWidth()+200,py);
+        }
+    }
+}
+
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+/**
+ * Write a description of class StartScreen here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class StartScreen extends World
+{
+
+    /**
+     * Constructor for objects of class StartScreen.
+     * 
+     */
+    private GreenfootSound soundtrack = new GreenfootSound("BattleTheme2.wav");
+    public StartScreen()
+    {    
+        // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
+        super(600, 400, 1); 
+        prepare();
+    }
+
+    /**
+     * Prepare the world for the start of the program.
+     * That is: create the initial objects and add them to the world.
+     */
+    private void prepare()
+    {
+        letters letters = new letters();
+        addObject(letters,300,200); //positioning the title screen
+        letters.setLocation(300,200);
+        letters.setLocation(300,200);
+    }
+        
+        public void act()
+    {
+     if(Greenfoot.isKeyDown("enter")){ //Pressing entering will allow the player to start
+     Greenfoot.setWorld(new Space());
+    }
+    
+}
+public void started()
+{
+    soundtrack.play(); //plays the star wars theme to make it a bit more appealing 
+}
+public void stopped()
+{
+ soundtrack.stop();   
+}
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+
+public class Rocket extends Actor
+{
+    private int targetx=0,targety=0;
+    private int jeda=0;
+    private boolean toRemove=false;
+    public void addedToWorld(World Space)
+    {
+        targetx=getX();targety=getY();
+    }
+    
+    public void Hancur()
+    {
+      for(int i=0;i<10;i++) {
+          int px=-20+Greenfoot.getRandomNumber(40);
+          int py=-20+Greenfoot.getRandomNumber(40);
+          getWorld().addObject(new Pecahan(getImage()),getX()+px,getY()+py);
+        }
+        getWorld().addObject(new Bundaran(),getX(),getY());
+        toRemove=true;
+    }
+    public void move() //ability for the spaceship to move with the mouse cursor
+    {
+        double rx=targetx-getX();
+        double ry=targety-getY();
+        double r=Math.sqrt (rx*rx+ry*ry);
+        int bts=5;
+        int posx=0,posy=0;
+        if(r>bts) {
+            posx=(int) (getX() +bts*rx/r);
+            posy=(int) (getY() +bts*rx/r);
+        }else{
+         posx=targetx;
+         posy=targety;
+           
+        }
+        setLocation(posx,posy);
+    }
+    
+    public void act() //so the player can manuever with the mouse 
+    {
+     if(Greenfoot.mouseMoved(null)) {
+         MouseInfo mouse=Greenfoot.getMouseInfo();
+         targetx=mouse.getX();
+         targety=mouse.getY();
+    }    
+    move();
+    if(jeda >0)jeda--;
+    if(jeda==1)getWorld().addObject(new Laser(),getX() + 100, getY());
+    if(jeda==0)jeda=40;
+    if(toRemove)getWorld().removeObject(this);
+}
+}
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+
+public class Enemy extends Actor
+{
+    private int vx=0;
+    private boolean toRemove=false;
+    public Enemy()
+    {
+        
+    }
+    
+    public Enemy(int v)
+    {
+        vx=v;
+    }
+    
+    public void addedToWorld(World Space)
+    {
+     setRotation(180);   
+    }
+    public void move()
+    {
+        setLocation(getX()+vx,getY());
+        Actor actor=getOneIntersectingObject(Rocket.class);
+        if(actor!=null) {
+         ((Rocket)actor).Hancur();
+         Hancur();
+        }
+        if(getX()<200)toRemove=true;
+    }
+    
+    public void Hancur()
+    {
+      for(int i=0;i<10;i++) {
+          int px=-20+Greenfoot.getRandomNumber(40);
+          int py=-20+Greenfoot.getRandomNumber(40);
+          getWorld().addObject(new Pecahan(getImage()),getX()+px,getY()+py);
+        }
+        getWorld().addObject(new Bundaran(),getX(),getY());
+        toRemove=true;
+    }
+    public void act() 
+    {
+        if(!toRemove)move();
+        else getWorld().removeObject(this);
+    }    
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+
+public class Laser extends Actor
+{
+    private boolean toRemove=false;
+    private int vx=3;
+    public void addedToWorld(World Space) //the creation of the laser itself 
+    {
+     GreenfootImage image=new GreenfootImage(80,10);
+      image.setColor(Color.BLUE);
+      image.drawLine(0,5,image.getWidth()-1,5);
+     setImage(image);
+     Greenfoot.playSound("Engine2.wav");
+     Greenfoot.playSound("pew.wav");
+    }
+    public void act() 
+    {
+       if(!toRemove) { //whenever the laser hits the enemy ship
+           setLocation(getX() + vx, getY());
+           Actor actor=getOneIntersectingObject(Enemy.class);
+           if(actor!=null){
+               ((Enemy)actor).Hancur();
+               }
+           if(getX()>getWorld().getWidth()+200)toRemove=true;
+    }    else {
+     getWorld().removeObject(this);   
+    }
+    
+}
+}
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+
+public class Bundaran extends Actor
+{
+    private int jeda=5;
+    public void addedToWorld(World Space) //foucses on creating the debris
+    {
+        GreenfootImage image=new GreenfootImage(100,100);
+        image.setColor(new Color(255,255,0,180));
+        image.fillOval(0,0,image.getWidth()-1,image.getHeight()-1);
+        image.fillOval(20,20,image.getWidth()-41,image.getHeight()-41);
+        setImage(image);
+        jeda=5;
+    }
+    public void act() 
+    {
+        if(jeda>0)jeda--;
+        else getWorld().removeObject(this);
+    }    
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+
+public class Pecahan extends Actor
+{
+    public int vx=0,vy=0,rot=0;
+    
+    public Pecahan(GreenfootImage img)//extra debris to empahsize the explosion
+    {
+     GreenfootImage image=new GreenfootImage(10,10);
+     image.drawImage(img,-Greenfoot.getRandomNumber(img.getWidth()),-Greenfoot.getRandomNumber(img.getHeight()));
+     setImage(image);
+    }
+    
+    public void addedToWorld(World Space)
+    {
+     vx=-5+Greenfoot.getRandomNumber(10);   
+     vy=-5+Greenfoot.getRandomNumber(10);  
+     rot=-10+Greenfoot.getRandomNumber(20);
+     if(vx==0)vx=1;
+     if(vy==0)vy=1;
+    }
+    public void act() 
+    {
+        setLocation(getX()+vx,getY()+vy); //positioning of the debris
+        setRotation(getRotation()+rot);
+        if(getX()<-200 || getY()<-200 || getX()>getWorld().getWidth()+200 || getY()>getWorld().getHeight()+200) {
+            getWorld().removeObject(this);
+        }
+    }    
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+/**
+ * Write a description of class letters here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class letters extends Actor (Actor class for letter has its information inside the main world class(World Space)
+{
+    /**
+     * Act - do whatever the letters wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
+    public void act() 
+    {
+        // Add your action code here.
+    }    
+}
