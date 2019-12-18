@@ -1,0 +1,31 @@
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+
+public class Laser extends Actor
+{
+    private boolean toRemove=false;
+    private int vx=3;
+    public void addedToWorld(World Space) //the creation of the laser itself 
+    {
+     GreenfootImage image=new GreenfootImage(80,10);
+      image.setColor(Color.BLUE);
+      image.drawLine(0,5,image.getWidth()-1,5);
+     setImage(image);
+     Greenfoot.playSound("Engine2.wav");
+     Greenfoot.playSound("pew.wav");
+    }
+    public void act() 
+    {
+       if(!toRemove) { //whenever the laser hits the enemy ship
+           setLocation(getX() + vx, getY());
+           Actor actor=getOneIntersectingObject(Enemy.class);
+           if(actor!=null){
+               ((Enemy)actor).Hancur();
+               }
+           if(getX()>getWorld().getWidth()+200)toRemove=true;
+    }    else {
+     getWorld().removeObject(this);   
+    }
+    
+}
+}
