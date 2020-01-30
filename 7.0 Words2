@@ -1,0 +1,74 @@
+//*****************************************************************
+// Words2.java      Author: lewis/loftus/Cocking
+//
+//  Demonstrates the use of the super reference
+//******************************************************************
+public class Word2
+{
+    //----------------------------------------------------------
+    //  Instantiates a derived class and invokes its inherited and
+    //  Local methods.
+    //--------------------------------------------------------------------------
+    public static void main(String[] args)
+    {
+        Dictionary2 webster = new Dictionary2 (500,52500);
+        webster.pageMessage();
+        webster.definitionMessage();
+
+    }
+}
+
+//  Dictionary2.java        Author: lewis:Loftus/Cocking
+//
+// Represents a dictionary, which is a book. Used to demonstrate
+//  the use of the super reference.
+//********************************************************
+public class Dictionary2 extends Book2
+{
+    private int definitions;
+    //-----------------------------------------------------
+    //  Sets up the dictionary with the specified number of pages
+    //  (maintained by the Book parent class) and definitions
+    //-----------------------------------------------------
+    public Dictionary2 (int numPages, int numDefinitions)
+    {
+        super (numPages);
+        definitions = numDefinitions;
+    }
+    //--------------------------------------------------------
+    //  Prints a message using both local and inherited values.
+    //--------------------------------------------------------
+    public void definitionMessage ()
+    {
+        System.out.println("Number of definitions: " + definitions);
+        System.out.println(" Definitions per page; " + definitions/pages);
+    }
+}
+
+//Eric
+
+//******************************************************
+//  Book2.java      Author: : Lewis/loftus/Cocking
+//
+//Represents a book. used as the parent of a derived class to
+//  demonstrate inheritance and the use of the super reference.
+//************************************************************
+public class Book2
+{
+    public int pages;
+    //----------------------------------------------------------------
+    //  Sets up the book with the specified number of pages.
+    //----------------------------------------------------------------
+    public Book2(int numPages)
+    {
+        pages = numPages;
+    }
+    //-----------------------------------------------------------
+    //  Prints a message about the pages of this book.
+    //-----------------------------------------------------------
+    public void pageMessage()
+    {
+        System.out.println("Number of pages:" + pages);
+    }
+}
+
