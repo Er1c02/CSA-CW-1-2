@@ -1,0 +1,208 @@
+public class Dog extends Pet
+{
+    private String breed;
+
+    public Dog (String name, String breed, int age, double weight, String food)
+    {
+        super(name, age, weight, food);
+        this.breed = breed;
+    }//end full constructor with call to super
+
+
+    public int MonthlyFeeding()
+    {
+        int dailyFeedings;
+        if(super.getAge() < 6)
+        {
+            dailyFeedings = 2;
+        }//end if puppy
+        else
+        {
+            dailyFeedings = 1;
+        }//end else adult
+        return dailyFeedings * 30;
+    }//end method explaining how many feedings per month, for budgetary reasons
+
+    public String fetch()
+    {
+        if (Math.random() >= 0.5)
+            return "Fetch accomplished";
+        else
+            return "No fetching here";
+    }//end method that exists in Dog but not Pet to demo Polymorphism issue
+
+
+    public String Speak()
+    {
+        if (this.age < 2)
+            return "Yip";
+        return "Woof";
+    }//end method Speak which overrides abstract method in Pet
+
+    public String toString()
+    {
+        String output = super.toString() +"\nBreed: " + breed;
+        return output;
+    }//end toString with call to super
+}//end class Dog
+
+public class Lizard extends Pet
+{
+    private String species;
+
+    public Lizard (String name, String species, int age, double weight, String food)
+    {
+        super (name, age, weight, food);
+        this.species = species;
+    }// end full constructor with call to super
+
+    public String Speak()
+    {
+        return "Hissss";
+    }
+
+    public String toString()
+    {
+        String output = super.toString() + "\nSpecies: " + species;
+        return output;
+    }//end toString with call to Super
+}//end class Lizard which IS A Pet
+
+public class Bird extends Pet
+{
+    private String species;
+    private String color;
+    private double wingspan; // inches
+
+    public Bird (String species, String name, int age, double weight, String color, double wingspan, String food)
+    {
+        super(name, age, weight, food);
+        this.color = color;
+        this.wingspan = wingspan;
+        this.species = species;
+    }//end full constructor which call super
+
+    public int monthlyFeeding()
+    {
+        return 8;
+    }// end method to determine the number of feedings
+    public String Speak()
+    {
+        return "The Universe is a simulation";
+    }
+
+    public String toString()
+    {
+        String output = super.toString() + "\nColor: " + color;
+        output += "\nWingspan: " + wingspan +" inches";
+        output += "\nSpecies: " + species;
+        return output;
+    }// end toString with call to Super
+
+}
+
+public class MyPetsDriver
+{
+
+
+    public static void main(String [] args)
+    {
+        Pet pablo = new Dog ( "Pablo", "Chihuahua", 5, 25.0, "kibble");
+        Pet tony = new Bird("Parrot","Tony",2,10.0,"Blue",24.2,"Seeds");
+System.out.println(pablo);
+System.out.println(tony);
+        //Pet rex = new Dog("Rex", "German Shepherd", 2, 160.2);
+        //Pet mochi = new Lizard("Mochi", "Blue-Tongued Skink", 8, 2);
+        //Pet donald = new Bird("Duck", "Donald", 85, 1.13, "white", 5000);
+        //Pet secret = new Pet("Secret", 7, 40.2); Pet is an abstract class and cannot be instantiated.
+
+//        System.out.println(rex.fetch()); //only works when Rex is a Dog, NOT when rex is a Pet.
+        //  System.out.println(rex.Speak()); //dependent upon what type Rex, Dog vs Pet
+
+//        int[] arrayOfInts = new int[5]; // and example of how to instantiate an array
+//        Pet[]  menagerie = new Pet[5]; //Starting to create an array of pets
+//        menagerie[0] = rex;
+//        menagerie[1] = mochi;
+//        menagerie[2] = donald;
+//
+//        for( int i = 0; i < menagerie.length; i++)
+//        {
+//            System.out.println(menagerie[i]);
+//        }
+
+        // Speaking to Pets
+//        System.out.println("Rex says: " + rex.Speak());
+//        System.out.println("Mochi says: " + mochi.Speak());
+//        System.out.println("Donald says: " + donald.Speak());
+
+        //Check unit conversion
+//        System.out.println("Rex's weight in pounds is " + rex.AmericanFreedomUnits() + ".\n");
+
+        //Testing Pets
+//        System.out.println(rex);
+//        System.out.println(mochi);
+//        System.out.println(donald);
+
+    }
+}
+
+
+import java.text.DecimalFormat; // to format the weight in pounds
+public abstract class Pet
+{
+    //Instance Variables
+    protected String name;
+    protected int age;
+    protected double weight; //in kg
+    private final double LB_TO_KG = 0.454;
+    public String food;
+    DecimalFormat fmt = new DecimalFormat("#.#"); // create formatting object
+
+    //constructors
+    public Pet (String name, int age, double weight, String food)
+    {
+        this.name = name;
+        this.age = age;
+        this.weight = weight;
+        this.food = food;
+    }// end full constructor called child classes
+
+    //Getters
+    public String getName()
+    {
+        return name;
+    }//end name getter
+    public int getAge()
+    {
+        return age;
+    }
+
+    //Setters
+    public void setName(String name)
+    {
+        this.name = name;
+    }//end name setter
+
+    //Brain Methods
+    abstract public String Speak(); // to be overridden in all child classes
+
+    public double AmericanFreedomUnits()
+    {
+        return weight *2.205;
+    }//end method to convert weight value into pounds
+
+    //toString method
+    public String toString()
+    {
+        String output = "";
+
+        output += "Name: " + name;
+        output += "\nAge: " + age + "\nWeight (in KG):" + AmericanFreedomUnits();
+        output += "\nWeight: " + weight + " kg" +
+                "(" + fmt.format(AmericanFreedomUnits() )+ " in pounds)";
+        output += "\nFood:" + food;
+
+        return output;
+    }//end toString which is called in all child classes
+}//end abstract class Pet which is parent to child classes
+
